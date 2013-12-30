@@ -19,8 +19,10 @@ public class Game implements ApplicationListener {
 	Texture bananaTexture;
 	OrthographicCamera camera;
 	Rectangle monkey;
+	Rectangle banana;
 	Array<Rectangle> bananas;
 	long lastDropTime;
+	int bananasEaten = 0;
 
 	@Override
 
@@ -42,7 +44,7 @@ public class Game implements ApplicationListener {
 	@Override
 
 	public void render() {
-		Gdx.gl.glClearColor(0, 1, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
@@ -61,11 +63,23 @@ public class Game implements ApplicationListener {
 			banana.y -= 200 * Gdx.graphics.getDeltaTime();
 			if(banana.y + 64 < 0)
 				iter.remove();
+			if(banana.overlaps(monkey)){
+				bananasEaten ++;
+				iter.remove();
+			}
 		}
+		
+		monkey.x = Gdx.input.getX();
+		
+		if(monkey.x >= 480 - 64)
+			monkey.x = 480 - 64;
+		
+		System.out.println(bananasEaten);
+		
 	}
 	
 	public void spawnBanana(){
-		Rectangle banana = new Rectangle();
+		banana = new Rectangle();
 		banana.x = MathUtils.random(0, 480 - 64);
 		banana.y = 700;
 		banana.width = 64;
